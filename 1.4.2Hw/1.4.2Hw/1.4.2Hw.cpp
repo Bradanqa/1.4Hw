@@ -4,8 +4,17 @@
 
 class Address {
 public:
-   Address(int userCount) {
-      count = userCount;
+   Address(std::string city, std::string street, int number, int app) {
+      this->city = city;
+      this->street = street;
+      this->number = number;
+      this->app = app;
+   }
+   Address(){
+      city = "0";
+      street = "0";
+      number = 0;
+      app = 0;
    }
 
    void setCity(std::string userCity){
@@ -26,6 +35,7 @@ public:
    }
 
    std::string getOutputAddress() {
+      std::string fullAddress;
       fullAddress = city + ", " + street + ", " + std::to_string(number) + ", " + std::to_string(app) + "\n";
       return fullAddress;
    }
@@ -33,11 +43,8 @@ public:
 private:
    std::string city;
    std::string street;
-   int number = 0;
-   int app = 0;
-   int count;
-
-   std::string fullAddress;
+   int number;
+   int app;
 };
 
 int main() {
@@ -49,20 +56,21 @@ int main() {
    std::ifstream userData("in.txt");
    userData >> count;
 
-   Address **addresses = new Address*[count];
+   Address *addresses = new Address[count];
    for (int i = 0; i < count; i++) {
-      addresses[i] = new Address(count);
+      Address tempC;
+      addresses[i] = tempC;
    }
 
    for (int j = 0; j < count; j++) {
       userData >> temp;
-      addresses[j]->setCity(temp);
+      addresses[j].setCity(temp);
       userData >> temp;
-      addresses[j]->setStreet(temp);
+      addresses[j].setStreet(temp);
       userData >> temp;
-      addresses[j]->setNumber(std::stoi(temp));
+      addresses[j].setNumber(std::stoi(temp));
       userData >> temp;
-      addresses[j]->setApp(std::stoi(temp));
+      addresses[j].setApp(std::stoi(temp));
    }
 
    userData.close();
@@ -73,7 +81,7 @@ int main() {
    for (int i = 0; i < count - 1; i++) {
       int min = i;
       for (int j = i + 1; j < count; j++) {
-         if (addresses[j]->getFirstSym() < addresses[min]->getFirstSym())
+         if (addresses[j].getFirstSym() < addresses[min].getFirstSym())
             min = j;
       }
       if (min != i)
@@ -81,14 +89,12 @@ int main() {
    }
 
    for (int j = 0; j < count; j++) {
-      data << addresses[j]->getOutputAddress();
+      data << addresses[j].getOutputAddress();
    }
 
    data.close();
 
-   for (int i = 0; i < count; i++) {
-      delete addresses[i];
-   }
+   delete[] addresses;
 
    return 0;
 }

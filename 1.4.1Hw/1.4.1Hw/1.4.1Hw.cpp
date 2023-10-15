@@ -2,10 +2,24 @@
 #include <fstream>
 #include <string>
 
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
 class Address {
 public:
-   Address(int userCount) {
-      count = userCount;
+   Address(std::string city, std::string street, int number, int app) {
+      this->city = city;
+      this->street = street;
+      this->number = number;
+      this->app = app;
+   }
+   Address(){
+      city = "0";
+      street = "0";
+      number = 0;
+      app = 0;
    }
 
    void setCity(std::string userCity){
@@ -22,6 +36,7 @@ public:
    }
 
    std::string getOutputAddress() {
+      std::string fullAddress;
       fullAddress = city + ", " + street + ", " + std::to_string(number) + ", " + std::to_string(app) + "\n";
       return fullAddress;
    }
@@ -31,9 +46,6 @@ private:
    std::string street;
    int number;
    int app;
-   int count;
-
-   std::string fullAddress;
 };
 
 int main() {
@@ -45,20 +57,21 @@ int main() {
    std::ifstream userData("in.txt");
    userData >> count;
 
-   Address **addresses = new Address*[count];
+   Address *addresses = new Address[count];
    for (int i = 0; i < count; i++) {
-      addresses[i] = new Address(count);
+      Address tempC;
+      addresses[i] = tempC;
    }
 
    for (int j = 0; j < count; j++) {
       userData >> temp;
-      addresses[j]->setCity(temp);
+      addresses[j].setCity(temp);
       userData >> temp;
-      addresses[j]->setStreet(temp);
+      addresses[j].setStreet(temp);
       userData >> temp;
-      addresses[j]->setNumber(std::stoi(temp));
+      addresses[j].setNumber(std::stoi(temp));
       userData >> temp;
-      addresses[j]->setApp(std::stoi(temp));
+      addresses[j].setApp(std::stoi(temp));
    }
 
    userData.close();
@@ -67,13 +80,12 @@ int main() {
    data << std::to_string(count) + "\n";
 
    for (int j = count; j > 0; j--) {
-      data << addresses[j - 1]->getOutputAddress();
+      data << addresses[j - 1].getOutputAddress();
    }
    data.close();
 
-   for (int i = 0; i < count; i++) {
-      delete addresses[i];
-   }
+   delete[] addresses;
 
    return 0;
 }
+
